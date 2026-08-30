@@ -29,6 +29,32 @@ class Trip extends Model
         'ended_at' => 'datetime',
     ];
 
+    public static function hasActiveTripForDriverOrVehicle(?int $driverId = null, ?int $vehicleId = null, ?int $excludeId = null): bool
+    {
+        $query = self::query()
+            ->whereIn('status', ['scheduled', 'in_progress'])
+            ->when($excludeId !== null, fn ($query) => $query->whereKeyNot($excludeId));
+
+        if ($driverId !== null || $vehicleId !== null) {
+            $query->where(function ($query) use ($driverId, $vehicleId) {
+                if ($driverId !== null) {
+                    $query->orWhere('driver_id', $driverId);
+                }
+
+                if ($vehicleId !== null) {
+                    $query->orWhere('vehicle_id', $vehicleId);
+                }
+            });
+        }
+
+        return $query->exists();
+    }
+
+    public function isActive(): bool
+    {
+        return in_array($this->status, ['scheduled', 'in_progress'], true);
+    }
+
     public function route(): BelongsTo
     {
         return $this->belongsTo(TransportRoute::class, 'route_id');

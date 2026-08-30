@@ -144,5 +144,6 @@ Route::middleware(['auth.custom', 'auto.logout'])->group(function () {
 
     // GPS tracking
     Route::get('/gps', [GpsTrackingController::class, 'index'])->name('gps.index')->middleware('permission:gps.view');
+    Route::get('/gps/latest', [GpsTrackingController::class, 'latest'])->name('gps.latest')->middleware('permission:gps.view');
     Route::post('/gps', [GpsTrackingController::class, 'store'])->name('gps.store')->middleware('permission:gps.update');
 });

@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passkeys\Contracts\PasskeyUser;
 use Laravel\Passkeys\PasskeyAuthenticatable;
 
 class User extends Authenticatable implements PasskeyUser
 {
-    use PasskeyAuthenticatable;
+    use HasFactory, PasskeyAuthenticatable;
 
     protected $fillable = ['name', 'email', 'password', 'avatar', 'phone', 'address'];
 

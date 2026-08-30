@@ -60,6 +60,13 @@ class TripController extends Controller
             'notes' => 'nullable|string|max:500',
         ]);
 
+        if (in_array($request->status, ['scheduled', 'in_progress'], true) && Trip::hasActiveTripForDriverOrVehicle($request->driver_id, $request->vehicle_id)) {
+            return back()->withErrors([
+                'driver_id' => 'Driver atau kendaraan ini sudah memiliki trip aktif.',
+                'vehicle_id' => 'Driver atau kendaraan ini sudah memiliki trip aktif.',
+            ])->withInput();
+        }
+
         Trip::create($request->all());
 
         return redirect()->route('trips.index')->with('success', 'Trip berhasil dibuat!');
@@ -103,6 +110,13 @@ class TripController extends Controller
             'total_passengers' => 'nullable|integer|min:0',
             'notes' => 'nullable|string|max:500',
         ]);
+
+        if (in_array($request->status, ['scheduled', 'in_progress'], true) && Trip::hasActiveTripForDriverOrVehicle($request->driver_id, $request->vehicle_id, $trip->id)) {
+            return back()->withErrors([
+                'driver_id' => 'Driver atau kendaraan ini sudah memiliki trip aktif.',
+                'vehicle_id' => 'Driver atau kendaraan ini sudah memiliki trip aktif.',
+            ])->withInput();
+        }
 
         $trip->update($request->all());
 
