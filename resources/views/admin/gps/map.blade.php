@@ -39,7 +39,7 @@
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        const markers = @json($latest->map(function ($tracking) {
+        const markers = {!! json_encode($latest->map(function ($tracking) {
             return [
                 'trip_id' => $tracking->trip_id,
                 'trip_code' => $tracking->trip?->trip_code,
@@ -49,7 +49,7 @@
                 'speed_kmh' => $tracking->speed_kmh ? (float) $tracking->speed_kmh : 0,
                 'recorded_at' => $tracking->recorded_at?->format('Y-m-d H:i:s'),
             ];
-        })->all());
+        })->all(), JSON_THROW_ON_ERROR) !!};
 
         markers.forEach((item) => {
             if (!item.latitude || !item.longitude) return;

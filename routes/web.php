@@ -31,6 +31,10 @@ Route::get('/otp-verification', fn() => view('auth.otp-verification'))->name('ot
 Route::get('/auth/google/redirect', [AuthController::class, 'redirectToGoogle'])->name('auth.google.redirect');
 Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 
+// Public tracking
+Route::get('/tracking', [GpsTrackingController::class, 'publicTracking'])->name('tracking.public');
+Route::get('/tracking/latest', [GpsTrackingController::class, 'publicLatest'])->name('tracking.latest');
+
 // Passkeys
 Route::get('/passkeys/login/options', [PasskeyLoginController::class, 'index'])
     ->middleware('guest:web')

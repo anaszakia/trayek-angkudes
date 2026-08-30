@@ -61,6 +61,43 @@ class GpsTrackingController extends Controller
         return view('admin.gps.map', compact('latest'));
     }
 
+    public function publicTracking()
+    {
+        $latest = GpsTracking::with(['trip.route', 'vehicle'])
+            ->orderByDesc('recorded_at')
+            ->get()
+            ->groupBy('trip_id')
+            ->map(fn ($items) => $items->first())
+            ->values();
+
+        return view('public.tracking', compact('latest'));
+    }
+
+    public function publicLatest()
+    {
+        $latest = GpsTracking::with(['trip.route', 'vehicle'])
+            ->orderByDesc('recorded_at')
+            ->get()
+            ->groupBy('trip_id')
+            ->map(fn ($items) => $items->first())
+            ->values();
+
+        return response()->json([
+            'data' => $latest->map(function ($tracking) {
+                return [
+                    'trip_id' => $tracking->trip_id,
+                    'trip_code' => $tracking->trip?->trip_code,
+                    'route' => $tracking->trip?->route?->name,
+                    'vehicle' => $tracking->vehicle?->plate_number,
+                    'latitude' => (float) $tracking->latitude,
+                    'longitude' => (float) $tracking->longitude,
+                    'speed_kmh' => $tracking->speed_kmh ? (float) $tracking->speed_kmh : 0,
+                    'recorded_at' => $tracking->recorded_at?->format('Y-m-d H:i:s'),
+                ];
+            })->all(),
+        ]);
+    }
+
     public function store(Request $request)
     {
         abort_unless(can('gps.update'), 403);
