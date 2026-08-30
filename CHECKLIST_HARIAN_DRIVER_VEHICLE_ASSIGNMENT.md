@@ -95,3 +95,40 @@ Tiga fitur ini dianggap siap lanjut ke tahap berikutnya jika:
 - admin bisa menambah vehicle
 - admin bisa mengassign kendaraan ke sopir
 - validasi logic assignment aktif berfungsi
+
+---
+
+## Tahap Trayek / Route (Status Saat Ini)
+
+### Yang sudah dibuat
+- [x] Model `TransportRoute`
+- [x] Migration `routes`
+- [x] Controller `TransportRouteController`
+- [x] View list create edit show trayek
+- [x] Relasi `points()` dan `stops()` dalam model route
+- [x] Permission `routes.*` sudah masuk dalam `PermissionSeeder`
+- [x] Menu `Trayek` ditambahkan ke `MenuSeeder`
+- [x] Route CRUD terdaftar di `routes/web.php`
+- [x] Test awal `RouteManagementTest` dibuat
+
+### Yang perlu dicek lanjutan
+- [ ] Validasi UI pasti sesuai pola modul user
+- [ ] Tambahkan CRUD untuk `RoutePoint` dan `RouteStop` jika dibutuhkan untuk operasional penuh
+- [ ] Uji akses role `superadmin` dan `driver` terhadap halaman trayek
+- [ ] Lanjut ke fitur Tarif, Jadwal, Trip, dan GPS setelah trayek stabil
+
+---
+
+## Urutan Berikutnya
+
+### Prioritas berikutnya
+- [ ] Tarif (fare)
+- [ ] Jadwal (schedule)
+- [ ] Trip (operasional perjalanan)
+- [ ] GPS tracking
+- [ ] Integrasi monitoring real-time dan log trip
+
+### Standar tetap
+- [ ] Semua view mengikuti pola modul user sebagai acuan utama
+- [ ] Menu dan permission terus ditambah di seeders
+- [ ] Progress dicatat dalam checklist ini setiap tahap

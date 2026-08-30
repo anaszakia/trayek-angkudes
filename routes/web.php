@@ -6,6 +6,7 @@ use App\Http\Controllers\DriverVehicleAssignmentController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TransportRouteController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
@@ -100,4 +101,13 @@ Route::middleware(['auth.custom', 'auto.logout'])->group(function () {
     Route::get('/assignments/{assignment}/edit', [DriverVehicleAssignmentController::class, 'edit'])->name('assignments.edit')->middleware('permission:assignments.edit');
     Route::put('/assignments/{assignment}', [DriverVehicleAssignmentController::class, 'update'])->name('assignments.update')->middleware('permission:assignments.edit');
     Route::delete('/assignments/{assignment}', [DriverVehicleAssignmentController::class, 'destroy'])->name('assignments.destroy')->middleware('permission:assignments.delete');
+
+    // Trayek / Route
+    Route::get('/routes', [TransportRouteController::class, 'index'])->name('routes.index')->middleware('permission:routes.view');
+    Route::get('/routes/create', [TransportRouteController::class, 'create'])->name('routes.create')->middleware('permission:routes.create');
+    Route::post('/routes', [TransportRouteController::class, 'store'])->name('routes.store')->middleware('permission:routes.create');
+    Route::get('/routes/{route}', [TransportRouteController::class, 'show'])->name('routes.show')->middleware('permission:routes.view');
+    Route::get('/routes/{route}/edit', [TransportRouteController::class, 'edit'])->name('routes.edit')->middleware('permission:routes.edit');
+    Route::put('/routes/{route}', [TransportRouteController::class, 'update'])->name('routes.update')->middleware('permission:routes.edit');
+    Route::delete('/routes/{route}', [TransportRouteController::class, 'destroy'])->name('routes.destroy')->middleware('permission:routes.delete');
 });

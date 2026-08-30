@@ -83,6 +83,13 @@ class MenuSeeder extends Seeder
                 'parent_id' => $masterData->id,
                 'order'     => 3,
             ],
+            [
+                'name'      => 'Trayek',
+                'url'       => '/routes',
+                'icon'      => 'ti ti-route',
+                'parent_id' => $masterData->id,
+                'order'     => 4,
+            ],
         ];
 
         $menus = collect([$dashboard, $menuManagement, $masterData]);
