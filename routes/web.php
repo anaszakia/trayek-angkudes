@@ -5,8 +5,12 @@ use App\Http\Controllers\DriverController;
 use App\Http\Controllers\DriverVehicleAssignmentController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\FareController;
+use App\Http\Controllers\GpsTrackingController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TransportRouteController;
+use App\Http\Controllers\TripController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
@@ -110,4 +114,35 @@ Route::middleware(['auth.custom', 'auto.logout'])->group(function () {
     Route::get('/routes/{route}/edit', [TransportRouteController::class, 'edit'])->name('routes.edit')->middleware('permission:routes.edit');
     Route::put('/routes/{route}', [TransportRouteController::class, 'update'])->name('routes.update')->middleware('permission:routes.edit');
     Route::delete('/routes/{route}', [TransportRouteController::class, 'destroy'])->name('routes.destroy')->middleware('permission:routes.delete');
+
+    // Tarif
+    Route::get('/fares', [FareController::class, 'index'])->name('fares.index')->middleware('permission:fares.view');
+    Route::get('/fares/create', [FareController::class, 'create'])->name('fares.create')->middleware('permission:fares.create');
+    Route::post('/fares', [FareController::class, 'store'])->name('fares.store')->middleware('permission:fares.create');
+    Route::get('/fares/{fare}', [FareController::class, 'show'])->name('fares.show')->middleware('permission:fares.view');
+    Route::get('/fares/{fare}/edit', [FareController::class, 'edit'])->name('fares.edit')->middleware('permission:fares.edit');
+    Route::put('/fares/{fare}', [FareController::class, 'update'])->name('fares.update')->middleware('permission:fares.edit');
+    Route::delete('/fares/{fare}', [FareController::class, 'destroy'])->name('fares.destroy')->middleware('permission:fares.delete');
+
+    // Jadwal
+    Route::get('/schedules', [ScheduleController::class, 'index'])->name('schedules.index')->middleware('permission:schedules.view');
+    Route::get('/schedules/create', [ScheduleController::class, 'create'])->name('schedules.create')->middleware('permission:schedules.create');
+    Route::post('/schedules', [ScheduleController::class, 'store'])->name('schedules.store')->middleware('permission:schedules.create');
+    Route::get('/schedules/{schedule}', [ScheduleController::class, 'show'])->name('schedules.show')->middleware('permission:schedules.view');
+    Route::get('/schedules/{schedule}/edit', [ScheduleController::class, 'edit'])->name('schedules.edit')->middleware('permission:schedules.edit');
+    Route::put('/schedules/{schedule}', [ScheduleController::class, 'update'])->name('schedules.update')->middleware('permission:schedules.edit');
+    Route::delete('/schedules/{schedule}', [ScheduleController::class, 'destroy'])->name('schedules.destroy')->middleware('permission:schedules.delete');
+
+    // Trip
+    Route::get('/trips', [TripController::class, 'index'])->name('trips.index')->middleware('permission:trips.view');
+    Route::get('/trips/create', [TripController::class, 'create'])->name('trips.create')->middleware('permission:trips.start');
+    Route::post('/trips', [TripController::class, 'store'])->name('trips.store')->middleware('permission:trips.start');
+    Route::get('/trips/{trip}', [TripController::class, 'show'])->name('trips.show')->middleware('permission:trips.view');
+    Route::get('/trips/{trip}/edit', [TripController::class, 'edit'])->name('trips.edit')->middleware('permission:trips.start');
+    Route::put('/trips/{trip}', [TripController::class, 'update'])->name('trips.update')->middleware('permission:trips.start');
+    Route::delete('/trips/{trip}', [TripController::class, 'destroy'])->name('trips.destroy')->middleware('permission:trips.history');
+
+    // GPS tracking
+    Route::get('/gps', [GpsTrackingController::class, 'index'])->name('gps.index')->middleware('permission:gps.view');
+    Route::post('/gps', [GpsTrackingController::class, 'store'])->name('gps.store')->middleware('permission:gps.update');
 });

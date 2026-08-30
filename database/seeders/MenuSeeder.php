@@ -90,6 +90,34 @@ class MenuSeeder extends Seeder
                 'parent_id' => $masterData->id,
                 'order'     => 4,
             ],
+            [
+                'name'      => 'Tarif',
+                'url'       => '/fares',
+                'icon'      => 'ti ti-currency-dollar',
+                'parent_id' => $masterData->id,
+                'order'     => 5,
+            ],
+            [
+                'name'      => 'Jadwal',
+                'url'       => '/schedules',
+                'icon'      => 'ti ti-calendar-time',
+                'parent_id' => $masterData->id,
+                'order'     => 6,
+            ],
+            [
+                'name'      => 'Trip',
+                'url'       => '/trips',
+                'icon'      => 'ti ti-map-2',
+                'parent_id' => $masterData->id,
+                'order'     => 7,
+            ],
+            [
+                'name'      => 'GPS',
+                'url'       => '/gps',
+                'icon'      => 'ti ti-location',
+                'parent_id' => $masterData->id,
+                'order'     => 8,
+            ],
         ];
 
         $menus = collect([$dashboard, $menuManagement, $masterData]);
