@@ -47,6 +47,20 @@ class GpsTrackingController extends Controller
         ]);
     }
 
+    public function map()
+    {
+        abort_unless(can('gps.view'), 403);
+
+        $latest = GpsTracking::with(['trip.route', 'vehicle'])
+            ->orderByDesc('recorded_at')
+            ->get()
+            ->groupBy('trip_id')
+            ->map(fn ($items) => $items->first())
+            ->values();
+
+        return view('admin.gps.map', compact('latest'));
+    }
+
     public function store(Request $request)
     {
         abort_unless(can('gps.update'), 403);
