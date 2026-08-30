@@ -43,6 +43,11 @@ class PermissionSeeder extends Seeder
             ['name' => 'Edit Kendaraan', 'slug' => 'vehicles.edit'],
             ['name' => 'Hapus Kendaraan', 'slug' => 'vehicles.delete'],
 
+            ['name' => 'Lihat Assignment', 'slug' => 'assignments.view'],
+            ['name' => 'Buat Assignment', 'slug' => 'assignments.create'],
+            ['name' => 'Edit Assignment', 'slug' => 'assignments.edit'],
+            ['name' => 'Hapus Assignment', 'slug' => 'assignments.delete'],
+
             ['name' => 'Lihat Trayek', 'slug' => 'routes.view'],
             ['name' => 'Buat Trayek', 'slug' => 'routes.create'],
             ['name' => 'Edit Trayek', 'slug' => 'routes.edit'],
@@ -96,7 +101,14 @@ class PermissionSeeder extends Seeder
             $driverPermissions = Permission::whereIn('slug', [
                 'dashboard.view',
                 'drivers.view',
+                'drivers.create',
+                'drivers.edit',
                 'vehicles.view',
+                'vehicles.create',
+                'vehicles.edit',
+                'assignments.view',
+                'assignments.create',
+                'assignments.edit',
                 'routes.view',
                 'trips.view',
                 'trips.start',

@@ -26,6 +26,13 @@ class MenuSeeder extends Seeder
             'order' => 2,
         ]);
 
+        $masterData = $this->menu([
+            'name'  => 'Master Data',
+            'url'   => null,
+            'icon'  => 'ti ti-database',
+            'order' => 3,
+        ]);
+
         $children = [
             [
                 'name'      => 'User',
@@ -55,9 +62,30 @@ class MenuSeeder extends Seeder
                 'parent_id' => $menuManagement->id,
                 'order'     => 4,
             ],
+            [
+                'name'      => 'Driver',
+                'url'       => '/drivers',
+                'icon'      => 'ti ti-user-check',
+                'parent_id' => $masterData->id,
+                'order'     => 1,
+            ],
+            [
+                'name'      => 'Vehicle',
+                'url'       => '/vehicles',
+                'icon'      => 'ti ti-bus',
+                'parent_id' => $masterData->id,
+                'order'     => 2,
+            ],
+            [
+                'name'      => 'Assignment',
+                'url'       => '/assignments',
+                'icon'      => 'ti ti-clipboard-check',
+                'parent_id' => $masterData->id,
+                'order'     => 3,
+            ],
         ];
 
-        $menus = collect([$dashboard, $menuManagement]);
+        $menus = collect([$dashboard, $menuManagement, $masterData]);
 
         foreach ($children as $child) {
             $menus->push($this->menu($child));
