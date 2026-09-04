@@ -106,14 +106,22 @@ Tiga fitur ini dianggap siap lanjut ke tahap berikutnya jika:
 - [x] Controller `TransportRouteController`
 - [x] View list create edit show trayek
 - [x] Relasi `points()` dan `stops()` dalam model route
+- [x] Model dan migration `RoutePoint`
+- [x] Model dan migration `RouteStop`
+- [x] CRUD `RoutePoint` beserta validasi koordinat
+- [x] CRUD `RouteStop` beserta validasi koordinat
 - [x] Permission `routes.*` sudah masuk dalam `PermissionSeeder`
+- [x] Permission `route_points.*` dan `route_stops.*` sudah tersedia
 - [x] Menu `Trayek` ditambahkan ke `MenuSeeder`
+- [x] Menu `Titik Trayek` dan `Halte` ditambahkan ke `MenuSeeder`
 - [x] Route CRUD terdaftar di `routes/web.php`
+- [x] Route CRUD titik trayek dan halte terdaftar di `routes/web.php`
 - [x] Test awal `RouteManagementTest` dibuat
+- [x] Test awal `RoutePointStopManagementTest` dibuat
 
 ### Yang perlu dicek lanjutan
 - [ ] Validasi UI pasti sesuai pola modul user
-- [ ] Tambahkan CRUD untuk `RoutePoint` dan `RouteStop` jika dibutuhkan untuk operasional penuh
+- [x] Tambahkan CRUD untuk `RoutePoint` dan `RouteStop` jika dibutuhkan untuk operasional penuh
 - [ ] Uji akses role `superadmin` dan `driver` terhadap halaman trayek
 - [ ] Lanjut ke fitur Tarif, Jadwal, Trip, dan GPS setelah trayek stabil
 

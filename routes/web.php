@@ -7,6 +7,8 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\FareController;
 use App\Http\Controllers\GpsTrackingController;
+use App\Http\Controllers\RoutePointController;
+use App\Http\Controllers\RouteStopController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TransportRouteController;
@@ -118,6 +120,23 @@ Route::middleware(['auth.custom', 'auto.logout'])->group(function () {
     Route::get('/routes/{route}/edit', [TransportRouteController::class, 'edit'])->name('routes.edit')->middleware('permission:routes.edit');
     Route::put('/routes/{route}', [TransportRouteController::class, 'update'])->name('routes.update')->middleware('permission:routes.edit');
     Route::delete('/routes/{route}', [TransportRouteController::class, 'destroy'])->name('routes.destroy')->middleware('permission:routes.delete');
+
+    // Route points dan stops
+    Route::get('/route-points', [RoutePointController::class, 'index'])->name('route-points.index')->middleware('permission:route_points.view');
+    Route::get('/route-points/create', [RoutePointController::class, 'create'])->name('route-points.create')->middleware('permission:route_points.create');
+    Route::post('/route-points', [RoutePointController::class, 'store'])->name('route-points.store')->middleware('permission:route_points.create');
+    Route::get('/route-points/{routePoint}', [RoutePointController::class, 'show'])->name('route-points.show')->middleware('permission:route_points.view');
+    Route::get('/route-points/{routePoint}/edit', [RoutePointController::class, 'edit'])->name('route-points.edit')->middleware('permission:route_points.edit');
+    Route::put('/route-points/{routePoint}', [RoutePointController::class, 'update'])->name('route-points.update')->middleware('permission:route_points.edit');
+    Route::delete('/route-points/{routePoint}', [RoutePointController::class, 'destroy'])->name('route-points.destroy')->middleware('permission:route_points.delete');
+
+    Route::get('/route-stops', [RouteStopController::class, 'index'])->name('route-stops.index')->middleware('permission:route_stops.view');
+    Route::get('/route-stops/create', [RouteStopController::class, 'create'])->name('route-stops.create')->middleware('permission:route_stops.create');
+    Route::post('/route-stops', [RouteStopController::class, 'store'])->name('route-stops.store')->middleware('permission:route_stops.create');
+    Route::get('/route-stops/{routeStop}', [RouteStopController::class, 'show'])->name('route-stops.show')->middleware('permission:route_stops.view');
+    Route::get('/route-stops/{routeStop}/edit', [RouteStopController::class, 'edit'])->name('route-stops.edit')->middleware('permission:route_stops.edit');
+    Route::put('/route-stops/{routeStop}', [RouteStopController::class, 'update'])->name('route-stops.update')->middleware('permission:route_stops.edit');
+    Route::delete('/route-stops/{routeStop}', [RouteStopController::class, 'destroy'])->name('route-stops.destroy')->middleware('permission:route_stops.delete');
 
     // Tarif
     Route::get('/fares', [FareController::class, 'index'])->name('fares.index')->middleware('permission:fares.view');
