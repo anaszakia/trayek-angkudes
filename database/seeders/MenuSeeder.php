@@ -11,11 +11,19 @@ class MenuSeeder extends Seeder
     public function run(): void
     {
         $admin = Role::where('slug', 'superadmin')->first();
+        $driver = Role::where('slug', 'driver')->first();
 
         $dashboard = $this->menu([
             'name'  => 'Dashboard',
             'url'   => '/dashboard',
             'icon'  => 'ti ti-layout-dashboard',
+            'order' => 1,
+        ]);
+
+        $driverDashboard = $this->menu([
+            'name'  => 'Dashboard Driver',
+            'url'   => '/driver/dashboard',
+            'icon'  => 'ti ti-steering-wheel',
             'order' => 1,
         ]);
 
@@ -144,6 +152,10 @@ class MenuSeeder extends Seeder
             foreach ($menus as $menu) {
                 $menu->roles()->syncWithoutDetaching([$admin->id]);
             }
+        }
+
+        if ($driver) {
+            $driverDashboard->roles()->syncWithoutDetaching([$driver->id]);
         }
     }
 

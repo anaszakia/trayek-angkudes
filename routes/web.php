@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DriverController;
+use App\Http\Controllers\DriverDashboardController;
 use App\Http\Controllers\DriverVehicleAssignmentController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PermissionController;
@@ -62,6 +63,12 @@ Route::middleware(['auth:web', 'auth.custom'])->group(function () {
 Route::middleware(['auth.custom', 'auto.logout'])->group(function () {
     Route::get('/', fn() => redirect()->route('dashboard'));
     Route::get('/dashboard', fn() => view('dashboard'))->name('dashboard');
+
+    // Workflow driver
+    Route::get('/driver/dashboard', [DriverDashboardController::class, 'dashboard'])->name('driver.dashboard')->middleware('permission:trips.view');
+    Route::post('/driver/trips/start', [DriverDashboardController::class, 'start'])->name('driver.trips.start')->middleware('permission:trips.start');
+    Route::post('/driver/trips/{trip}/stop', [DriverDashboardController::class, 'stop'])->name('driver.trips.stop')->middleware('permission:trips.stop');
+    Route::post('/driver/trips/{trip}/location', [DriverDashboardController::class, 'location'])->name('driver.trips.location')->middleware(['permission:gps.update', 'throttle:30,1']);
 
     // Menu management - hanya admin
     Route::middleware(['role:superadmin'])->group(function () {

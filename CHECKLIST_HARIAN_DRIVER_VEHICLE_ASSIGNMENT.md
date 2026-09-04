@@ -136,6 +136,18 @@ Tiga fitur ini dianggap siap lanjut ke tahap berikutnya jika:
 - [ ] GPS tracking
 - [ ] Integrasi monitoring real-time dan log trip
 
+### Workflow Driver (Status Saat Ini)
+- [x] Dashboard driver
+- [x] Menampilkan kendaraan dari assignment aktif
+- [x] Driver memilih trayek aktif
+- [x] Driver dapat memulai trip
+- [x] Driver hanya dapat menghentikan trip miliknya
+- [x] Browser GPS menggunakan `watchPosition()`
+- [x] Pengiriman lokasi dibatasi interval minimal 10 detik di browser
+- [x] Endpoint GPS driver memvalidasi kepemilikan trip
+- [x] Rate limit endpoint GPS driver
+- [x] Test workflow start/stop dan ownership GPS dibuat
+
 ### Standar tetap
 - [ ] Semua view mengikuti pola modul user sebagai acuan utama
 - [ ] Menu dan permission terus ditambah di seeders
