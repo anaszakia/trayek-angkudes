@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\VehicleLocationUpdated;
 use App\Models\Driver;
 use App\Models\DriverVehicleAssignment;
 use App\Models\GpsTracking;
@@ -103,6 +104,7 @@ class DriverDashboardController extends Controller
             'trip_id' => $trip->id,
             'vehicle_id' => $trip->vehicle_id,
         ]);
+        VehicleLocationUpdated::dispatch($tracking);
 
         return response()->json(['success' => true, 'data' => $tracking]);
     }

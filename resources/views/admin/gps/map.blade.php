@@ -51,18 +51,24 @@
             ];
         })->all(), JSON_THROW_ON_ERROR) !!};
 
-        markers.forEach((item) => {
-            if (!item.latitude || !item.longitude) return;
+        const markerLayer = L.layerGroup().addTo(map);
+        const liveMarkers = new Map(markers.map((item) => [item.trip_id, item]));
 
-            const marker = L.marker([item.latitude, item.longitude]).addTo(map);
-            marker.bindPopup(`
-                <div>
-                    <strong>${item.trip_code ?? 'Trip'}</strong><br>
-                    Kendaraan: ${item.vehicle ?? '-'}<br>
-                    Kecepatan: ${item.speed_kmh ?? 0} km/h<br>
-                    Waktu: ${item.recorded_at ?? '-'}
-                </div>
-            `);
-        });
+        function renderMarkers() {
+            markerLayer.clearLayers();
+            liveMarkers.forEach((item) => {
+                if (!item.latitude || !item.longitude) return;
+                const marker = L.marker([item.latitude, item.longitude]).addTo(markerLayer);
+                marker.bindPopup(`<div><strong>${item.trip_code ?? 'Trip'}</strong><br>Kendaraan: ${item.vehicle ?? '-'}<br>Kecepatan: ${item.speed_kmh ?? 0} km/h<br>Waktu: ${item.recorded_at ?? '-'}</div>`);
+            });
+        }
+
+        renderMarkers();
+        if (window.Echo) {
+            window.Echo.channel('vehicles').listen('.vehicle.location.updated', (item) => {
+                liveMarkers.set(item.trip_id, item);
+                renderMarkers();
+            });
+        }
     </script>
 @endpush

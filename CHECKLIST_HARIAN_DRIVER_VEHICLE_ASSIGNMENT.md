@@ -136,6 +136,22 @@ Tiga fitur ini dianggap siap lanjut ke tahap berikutnya jika:
 - [ ] GPS tracking
 - [ ] Integrasi monitoring real-time dan log trip
 
+### Real-time Tracking (Status Saat Ini)
+- [x] Laravel Reverb terpasang
+- [x] Event `VehicleLocationUpdated` dibuat
+- [x] Broadcast channel publik kendaraan dibuat
+- [x] Event dipicu setelah lokasi GPS tersimpan
+- [x] Laravel Echo dan Pusher ditambahkan ke frontend
+- [x] Map admin menerima update lokasi realtime
+- [x] Public tracking menerima update lokasi realtime
+- [x] Polling tetap tersedia sebagai fallback
+
+### Data Testing dan Bahasa Menu
+- [x] Seeder `DummyDataSeeder` untuk user dan seluruh modul operasional
+- [x] Data dummy dibuat idempoten dengan `updateOrCreate`
+- [x] Relasi driver, kendaraan, assignment, trayek, titik, halte, tarif, jadwal, trip, dan GPS terisi
+- [x] Label menu diterjemahkan ke Bahasa Indonesia
+
 ### Workflow Driver (Status Saat Ini)
 - [x] Dashboard driver
 - [x] Menampilkan kendaraan dari assignment aktif

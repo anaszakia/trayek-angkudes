@@ -14,28 +14,28 @@ class MenuSeeder extends Seeder
         $driver = Role::where('slug', 'driver')->first();
 
         $dashboard = $this->menu([
-            'name'  => 'Dashboard',
+            'name'  => 'Dasbor',
             'url'   => '/dashboard',
             'icon'  => 'ti ti-layout-dashboard',
             'order' => 1,
         ]);
 
         $driverDashboard = $this->menu([
-            'name'  => 'Dashboard Driver',
+            'name'  => 'Dasbor Pengemudi',
             'url'   => '/driver/dashboard',
             'icon'  => 'ti ti-steering-wheel',
             'order' => 1,
         ]);
 
         $menuManagement = $this->menu([
-            'name'  => 'Menu Management',
+            'name'  => 'Manajemen Menu',
             'url'   => null,
             'icon'  => 'ti ti-menu-deep',
             'order' => 2,
         ]);
 
         $masterData = $this->menu([
-            'name'  => 'Master Data',
+            'name'  => 'Data Master',
             'url'   => null,
             'icon'  => 'ti ti-database',
             'order' => 3,
@@ -43,49 +43,49 @@ class MenuSeeder extends Seeder
 
         $children = [
             [
-                'name'      => 'User',
+                'name'      => 'Pengguna',
                 'url'       => '/users',
                 'icon'      => 'ti ti-users',
                 'parent_id' => $menuManagement->id,
                 'order'     => 1,
             ],
             [
-                'name'      => 'Roles',
+                'name'      => 'Peran',
                 'url'       => '/roles',
                 'icon'      => 'ti ti-shield',
                 'parent_id' => $menuManagement->id,
                 'order'     => 2,
             ],
             [
-                'name'      => 'Permission',
+                'name'      => 'Izin',
                 'url'       => '/permissions',
                 'icon'      => 'ti ti-key',
                 'parent_id' => $menuManagement->id,
                 'order'     => 3,
             ],
             [
-                'name'      => 'Menus',
+                'name'      => 'Menu',
                 'url'       => '/menus',
                 'icon'      => 'ti ti-menu-2',
                 'parent_id' => $menuManagement->id,
                 'order'     => 4,
             ],
             [
-                'name'      => 'Driver',
+                'name'      => 'Pengemudi',
                 'url'       => '/drivers',
                 'icon'      => 'ti ti-user-check',
                 'parent_id' => $masterData->id,
                 'order'     => 1,
             ],
             [
-                'name'      => 'Vehicle',
+                'name'      => 'Kendaraan',
                 'url'       => '/vehicles',
                 'icon'      => 'ti ti-bus',
                 'parent_id' => $masterData->id,
                 'order'     => 2,
             ],
             [
-                'name'      => 'Assignment',
+                'name'      => 'Penugasan',
                 'url'       => '/assignments',
                 'icon'      => 'ti ti-clipboard-check',
                 'parent_id' => $masterData->id,
@@ -127,7 +127,7 @@ class MenuSeeder extends Seeder
                 'order'     => 8,
             ],
             [
-                'name'      => 'Trip',
+                'name'      => 'Perjalanan',
                 'url'       => '/trips',
                 'icon'      => 'ti ti-map-2',
                 'parent_id' => $masterData->id,

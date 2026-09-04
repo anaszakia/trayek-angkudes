@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Peta Tracking</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    @vite(['resources/js/app.js'])
     <style>
         body { margin: 0; font-family: Arial, sans-serif; background: #f5f7fb; }
         .topbar { background: #0f172a; color: white; padding: 18px 24px; font-weight: 700; }
@@ -48,6 +49,7 @@
         })->all(), JSON_THROW_ON_ERROR) !!};
 
         const markerLayer = L.layerGroup().addTo(map);
+        const liveMarkers = new Map(markers.map((item) => [item.trip_id, item]));
 
         function renderMarkers(data) {
             markerLayer.clearLayers();
@@ -75,11 +77,20 @@
 
         renderMarkers(markers);
 
+        if (window.Echo) {
+            window.Echo.channel('vehicles').listen('.vehicle.location.updated', (item) => {
+                liveMarkers.set(item.trip_id, item);
+                renderMarkers(Array.from(liveMarkers.values()));
+            });
+        }
+
         setInterval(() => {
             fetch('{{ route('tracking.latest') }}')
                 .then(res => res.json())
                 .then(data => {
                     if (data && data.data) {
+                        liveMarkers.clear();
+                        data.data.forEach((item) => liveMarkers.set(item.trip_id, item));
                         renderMarkers(data.data);
                     }
                 })

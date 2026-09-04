@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\VehicleLocationUpdated;
 use App\Models\GpsTracking;
 use App\Models\Trip;
 use App\Models\Vehicle;
@@ -135,6 +136,7 @@ class GpsTrackingController extends Controller
             'accuracy_m' => $request->accuracy_m,
             'recorded_at' => $request->recorded_at,
         ]);
+        VehicleLocationUpdated::dispatch($tracking);
 
         if ($request->expectsJson()) {
             return response()->json([
