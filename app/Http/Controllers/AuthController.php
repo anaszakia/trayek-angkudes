@@ -28,7 +28,12 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             // Reload user dengan relasi passkeys untuk memastikan data terbaru
-            $user = Auth::user()->loadMissing('passkeys');
+            $user = Auth::user()->loadMissing(['roles', 'passkeys']);
+
+            if (! $this->isStaffUser($user)) {
+                Auth::logout();
+                return back()->withErrors(['email' => 'Login hanya tersedia untuk pengemudi dan super admin.'])->withInput();
+            }
 
             session([
                 'user_id'        => Auth::id(),
@@ -39,10 +44,10 @@ class AuthController extends Controller
 
             // Selalu tunjukkan prompt passkey jika user belum punya passkey
             if ($user->passkeys()->doesntExist()) {
-                return redirect()->route('dashboard')->with('show_passkey_prompt', true);
+                return redirect()->route($this->isDriverUser($user) ? 'driver.dashboard' : 'dashboard')->with('show_passkey_prompt', true);
             }
 
-            return redirect()->route('dashboard');
+            return redirect()->route($this->isDriverUser($user) ? 'driver.dashboard' : 'dashboard');
         }
 
         return back()->withErrors(['email' => 'Email atau password salah.'])->withInput();
@@ -74,55 +79,24 @@ class AuthController extends Controller
             ->orWhere('email', $googleUser->getEmail())
             ->first();
 
-        // Pastikan role default 'user' ada (jika belum, buat)
-        $defaultRole = Role::firstOrCreate(
-            ['slug' => 'user'],
-            ['name' => 'User']
-        );
-
         if (! $user) {
-            // If the flow was initiated from the login page, do not auto-register
-            if ($intent !== 'register') {
-                return redirect()->route('login')->withErrors(['email' => 'Akun belum terdaftar. Silakan daftar terlebih dahulu.']);
-            }
-            $user = User::create([
-                'name'              => $googleUser->getName(),
-                'email'             => $googleUser->getEmail(),
-                'google_id'         => $googleUser->getId(),
-                'password'          => bcrypt(Str::random(24)), // tidak pernah dipakai untuk login
-                'role_id'           => $defaultRole->id,
-                'email_verified_at' => now(),
-            ]);
+            return redirect()->route('login')->withErrors(['email' => 'Akun belum terdaftar. Silakan hubungi administrator.']);
+        }
 
-            // Pastikan relasi pivot juga terhubung
-            $user->roles()->syncWithoutDetaching([$defaultRole->id]);
-        } else {
-            $updates = [];
-            if (! $user->google_id) {
-                // User lama yang sebelumnya daftar manual, sekarang login pakai Google dengan email yang sama
-                $updates['google_id'] = $googleUser->getId();
-            }
+        $user->loadMissing('roles');
+        if (! $this->isStaffUser($user)) {
+            return redirect()->route('login')->withErrors(['email' => 'Login hanya tersedia untuk pengemudi dan super admin.']);
+        }
 
-            if (! $user->role_id) {
-                // Pastikan user punya role default
-                $updates['role_id'] = $defaultRole->id;
-            }
-
-            if (! empty($updates)) {
-                $user->update($updates);
-            }
-
-            // Pastikan relasi pivot juga terhubung
-            if (! $user->roles()->where('roles.id', $defaultRole->id)->exists()) {
-                $user->roles()->syncWithoutDetaching([$defaultRole->id]);
-            }
+        if (! $user->google_id) {
+            $user->forceFill(['google_id' => $googleUser->getId()])->save();
         }
 
         Auth::login($user, remember: true);
         request()->session()->regenerate();
 
         // Reload user dengan relasi passkeys untuk memastikan data terbaru
-        $user = Auth::user()->loadMissing('passkeys');
+        $user = Auth::user()->loadMissing(['roles', 'passkeys']);
 
         session([
             'user_id'        => Auth::id(),
@@ -133,10 +107,10 @@ class AuthController extends Controller
 
         // Selalu tunjukkan prompt passkey jika user belum punya passkey
         if ($user->passkeys()->doesntExist()) {
-            return redirect()->route('dashboard')->with('show_passkey_prompt', true);
+            return redirect()->route($this->isDriverUser($user) ? 'driver.dashboard' : 'dashboard')->with('show_passkey_prompt', true);
         }
 
-        return redirect()->route('dashboard');
+        return redirect()->route($this->isDriverUser($user) ? 'driver.dashboard' : 'dashboard');
     }
 
     public function logout(Request $request)
@@ -145,5 +119,16 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect()->route('login')->with('info', 'Anda telah logout.');
+    }
+
+    private function isStaffUser(User $user): bool
+    {
+        return $user->roles->pluck('slug')->intersect(['super_admin', 'superadmin', 'driver'])->isNotEmpty()
+            || in_array($user->role?->slug, ['super_admin', 'superadmin', 'driver'], true);
+    }
+
+    private function isDriverUser(User $user): bool
+    {
+        return $user->roles->contains('slug', 'driver') || $user->role?->slug === 'driver';
     }
 }

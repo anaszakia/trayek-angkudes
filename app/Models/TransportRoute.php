@@ -36,4 +36,14 @@ class TransportRoute extends Model
     {
         return $this->hasMany(RouteStop::class, 'route_id');
     }
+
+    public function fares(): HasMany
+    {
+        return $this->hasMany(Fare::class, 'route_id');
+    }
+
+    public function schedules(): HasMany
+    {
+        return $this->hasMany(TransportSchedule::class, 'route_id');
+    }
 }

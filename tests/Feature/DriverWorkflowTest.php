@@ -17,6 +17,41 @@ class DriverWorkflowTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_driver_can_open_dashboard_with_active_assignment(): void
+    {
+        $user = User::factory()->create(['name' => 'Driver Dashboard']);
+        $role = Role::firstOrCreate(['slug' => 'driver'], ['name' => 'Driver']);
+        $permission = Permission::firstOrCreate(['slug' => 'trips.view'], ['name' => 'Lihat Trip']);
+        $role->permissions()->sync([$permission->id]);
+        $user->roles()->sync([$role->id]);
+        $this->withSession(['user_id' => $user->id]);
+
+        $driver = Driver::create(['user_id' => $user->id, 'driver_code' => 'DRV-DASH', 'status' => 'active']);
+        $vehicle = Vehicle::create(['vehicle_code' => 'VHC-DASH', 'plate_number' => 'AB-DASH', 'vehicle_type' => 'angkot', 'status' => 'active']);
+        DriverVehicleAssignment::create(['driver_id' => $driver->id, 'vehicle_id' => $vehicle->id, 'started_at' => now(), 'status' => 'active']);
+
+        $this->get(route('driver.dashboard'))
+            ->assertOk()
+            ->assertSee('Driver Dashboard')
+            ->assertSee('AB-DASH');
+    }
+
+    public function test_driver_cannot_start_trip_without_active_assignment(): void
+    {
+        $user = User::factory()->create();
+        $role = Role::firstOrCreate(['slug' => 'driver'], ['name' => 'Driver']);
+        $permission = Permission::firstOrCreate(['slug' => 'trips.start'], ['name' => 'Mulai Trip']);
+        $role->permissions()->sync([$permission->id]);
+        $user->roles()->sync([$role->id]);
+        $this->withSession(['user_id' => $user->id]);
+        $driver = Driver::create(['user_id' => $user->id, 'driver_code' => 'DRV-NO-ASSIGN', 'status' => 'active']);
+        $route = TransportRoute::create(['code' => 'TR-NO-ASSIGN', 'name' => 'Tanpa Penugasan', 'route_type' => 'one_way', 'start_point' => 'A', 'end_point' => 'B', 'status' => 'active']);
+
+        $this->post(route('driver.trips.start'), ['route_id' => $route->id])
+            ->assertSessionHasErrors('route_id');
+        $this->assertDatabaseMissing('trips', ['driver_id' => $driver->id]);
+    }
+
     public function test_driver_can_start_and_stop_own_trip(): void
     {
         $user = User::factory()->create();

@@ -25,7 +25,7 @@ use Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController;
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::get('/register', fn() => view('auth.register'))->name('register');
+Route::get('/register', fn() => redirect()->route('tracking.public'))->name('register');
 Route::get('/forgot-password', fn() => view('auth.forgot-password'))->name('password.request');
 Route::post('/forgot-password', fn() => back()->with('status', 'Link dikirim!'))->name('password.email');
 Route::get('/reset-password/{token?}', fn($token = '') => view('auth.reset-password', compact('token')))->name('password.reset');
@@ -35,7 +35,9 @@ Route::get('/auth/google/redirect', [AuthController::class, 'redirectToGoogle'])
 Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 
 // Public tracking
+Route::get('/', fn() => redirect()->route('tracking.public'));
 Route::get('/tracking', [GpsTrackingController::class, 'publicTracking'])->name('tracking.public');
+Route::get('/tracking/data', [GpsTrackingController::class, 'publicData'])->name('tracking.data');
 Route::get('/tracking/latest', [GpsTrackingController::class, 'publicLatest'])->name('tracking.latest');
 
 // Passkeys
@@ -61,7 +63,6 @@ Route::middleware(['auth:web', 'auth.custom'])->group(function () {
 
 // Protected routes
 Route::middleware(['auth.custom', 'auto.logout'])->group(function () {
-    Route::get('/', fn() => redirect()->route('dashboard'));
     Route::get('/dashboard', fn() => view('dashboard'))->name('dashboard');
 
     // Workflow driver

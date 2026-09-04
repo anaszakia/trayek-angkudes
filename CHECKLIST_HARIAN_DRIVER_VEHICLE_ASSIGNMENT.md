@@ -164,6 +164,15 @@ Tiga fitur ini dianggap siap lanjut ke tahap berikutnya jika:
 - [x] Rate limit endpoint GPS driver
 - [x] Test workflow start/stop dan ownership GPS dibuat
 
+### PWA Pengemudi (Status Saat Ini)
+- [x] Manifest PWA khusus pengemudi
+- [x] Service worker pengemudi
+- [x] Tombol instalasi aplikasi
+- [x] Cache asset dasar
+- [x] Antrean GPS offline berbasis IndexedDB
+- [x] Sinkronisasi antrean saat koneksi kembali
+- [ ] Uji instalasi pada HTTPS perangkat nyata
+
 ### Standar tetap
 - [ ] Semua view mengikuti pola modul user sebagai acuan utama
 - [ ] Menu dan permission terus ditambah di seeders

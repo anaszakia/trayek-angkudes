@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'Sign In')
+@section('title', 'Masuk')
 
 @section('content')
 <main class="d-flex flex-column justify-content-center min-vh-100 py-6">
@@ -15,8 +15,7 @@
                         </a>
                         <h1 class="mb-1">Selamat Datang</h1>
                         <p class="mb-0">
-                            Belum punya akun?
-                            <a href="{{ route('register') }}" class="text-primary">Daftar di sini</a>
+                            Masuk hanya untuk pengemudi dan super admin.
                         </p>
                     </div>
                 </div>

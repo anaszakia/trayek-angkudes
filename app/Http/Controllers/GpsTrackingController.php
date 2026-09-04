@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\VehicleLocationUpdated;
 use App\Models\GpsTracking;
+use App\Models\TransportRoute;
 use App\Models\Trip;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
@@ -77,6 +78,7 @@ class GpsTrackingController extends Controller
     public function publicLatest()
     {
         $latest = GpsTracking::with(['trip.route', 'vehicle'])
+            ->whereHas('trip', fn ($query) => $query->whereIn('status', ['scheduled', 'in_progress']))
             ->orderByDesc('recorded_at')
             ->get()
             ->groupBy('trip_id')
@@ -88,14 +90,61 @@ class GpsTrackingController extends Controller
                 return [
                     'trip_id' => $tracking->trip_id,
                     'trip_code' => $tracking->trip?->trip_code,
+                    'route_id' => $tracking->trip?->route_id,
                     'route' => $tracking->trip?->route?->name,
                     'vehicle' => $tracking->vehicle?->plate_number,
                     'latitude' => (float) $tracking->latitude,
                     'longitude' => (float) $tracking->longitude,
                     'speed_kmh' => $tracking->speed_kmh ? (float) $tracking->speed_kmh : 0,
                     'recorded_at' => $tracking->recorded_at?->format('Y-m-d H:i:s'),
+                    'heading' => $tracking->heading ? (float) $tracking->heading : null,
                 ];
             })->all(),
+        ]);
+    }
+
+    public function publicData()
+    {
+        $routes = TransportRoute::with([
+            'points:id,route_id,sequence,name,latitude,longitude,is_terminal',
+            'stops:id,route_id,sequence,name,latitude,longitude,is_active',
+            'schedules:id,route_id,schedule_code,day_of_week,departure_time,arrival_time,frequency_minutes,status,description',
+            'fares:id,route_id,fare_code,name,passenger_type,amount,currency,effective_from,effective_to,status,description',
+        ])->where('status', 'active')->orderBy('code')->get();
+
+        return response()->json([
+            'routes' => $routes->map(fn (TransportRoute $route) => [
+                'id' => $route->id,
+                'code' => $route->code,
+                'name' => $route->name,
+                'route_type' => $route->route_type,
+                'start_point' => $route->start_point,
+                'end_point' => $route->end_point,
+                'distance_km' => $route->distance_km ? (float) $route->distance_km : null,
+                'description' => $route->description,
+                'points' => $route->points->map(fn ($point) => [
+                    'sequence' => $point->sequence, 'name' => $point->name,
+                    'latitude' => (float) $point->latitude, 'longitude' => (float) $point->longitude,
+                    'is_terminal' => (bool) $point->is_terminal,
+                ])->values(),
+                'stops' => $route->stops->where('is_active', true)->map(fn ($stop) => [
+                    'sequence' => $stop->sequence, 'name' => $stop->name,
+                    'latitude' => (float) $stop->latitude, 'longitude' => (float) $stop->longitude,
+                ])->values(),
+                'schedules' => $route->schedules->where('status', 'active')->map(fn ($schedule) => [
+                    'day_of_week' => $schedule->day_of_week,
+                    'departure_time' => substr($schedule->departure_time, 0, 5),
+                    'arrival_time' => substr($schedule->arrival_time, 0, 5),
+                    'frequency_minutes' => $schedule->frequency_minutes,
+                    'description' => $schedule->description,
+                ])->values(),
+                'fares' => $route->fares->where('status', 'active')->map(fn ($fare) => [
+                    'name' => $fare->name, 'passenger_type' => $fare->passenger_type,
+                    'amount' => (float) $fare->amount, 'currency' => $fare->currency,
+                    'description' => $fare->description,
+                ])->values(),
+            ])->values(),
+            'vehicles' => $this->publicLatest()->getData(true)['data'],
         ]);
     }
 

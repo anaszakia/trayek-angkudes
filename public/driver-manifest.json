@@ -1,0 +1,20 @@
+{
+    "name": "Angkutan Desa - Pengemudi",
+    "short_name": "Angkutan Driver",
+    "description": "Aplikasi pengemudi Angkutan Desa",
+    "start_url": "/driver/dashboard",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#f3f6f5",
+    "theme_color": "#16232b",
+    "lang": "id",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "/images/brand/logo/logo-icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ]
+}

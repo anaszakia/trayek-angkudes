@@ -71,7 +71,12 @@ class PublicTrackingTest extends TestCase
         $response = $this->get('/tracking');
 
         $response->assertOk();
-        $response->assertSee('Peta Tracking');
-        $response->assertSee('TRIP-800');
+        $response->assertSee('Angkutan Desa');
+        $response->assertSee('tracking/data');
+
+        $dataResponse = $this->getJson('/tracking/data');
+        $dataResponse->assertOk();
+        $dataResponse->assertJsonPath('routes.0.code', 'TR-800');
+        $dataResponse->assertJsonPath('vehicles.0.trip_code', 'TRIP-800');
     }
 }
